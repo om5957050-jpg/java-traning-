@@ -1,0 +1,126 @@
+
+mysql> -- Create Database
+mysql> CREATE DATABASE CollegeDB;
+ERROR 1007 (HY000): Can't create database 'collegedb'; database exists
+mysql>
+mysql> -- Select Database
+mysql> USE CollegeDB;
+Database changed
+mysql>
+mysql> -- Create Students Table
+mysql> CREATE TABLE Students (
+    ->     student_id INT PRIMARY KEY,
+    ->     student_name VARCHAR(50)
+    -> );
+ERROR 1050 (42S01): Table 'students' already exists
+mysql>
+mysql> -- Create Marks Table
+mysql> CREATE TABLE Marks (
+    ->     student_id INT,
+    ->     marks INT
+    -> );
+ERROR 1050 (42S01): Table 'marks' already exists
+mysql>
+mysql> -- Insert Data into Students Table
+mysql> INSERT INTO Students (student_id, student_name) VALUES
+    -> (1, 'Om'),
+    -> (2, 'Rahul'),
+    -> (3, 'Priya');
+ERROR 1062 (23000): Duplicate entry '1' for key 'students.PRIMARY'
+mysql>
+mysql> -- Insert Data into Marks Table
+mysql> INSERT INTO Marks (student_id, marks) VALUES
+    -> (1, 85),
+    -> (3, 90),
+    -> (4, 75);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql>
+mysql>
+mysql>
+mysql> SELECT s.student_id,
+    ->        s.student_name,
+    ->        m.marks
+    -> FROM Students s
+    -> INNER JOIN Marks m
+    -> ON s.student_id = m.student_id;
++------------+--------------+-------+
+| student_id | student_name | marks |
++------------+--------------+-------+
+|          1 | Om           |    85 |
+|          3 | Priya        |    90 |
+|          1 | Om           |    85 |
+|          3 | Priya        |    90 |
+|          1 | Om           |    85 |
+|          3 | Priya        |    90 |
++------------+--------------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT s.student_id,
+    ->        s.student_name,
+    ->        m.marks
+    -> FROM Students s
+    -> LEFT JOIN Marks m
+    -> ON s.student_id = m.student_id;
++------------+--------------+-------+
+| student_id | student_name | marks |
++------------+--------------+-------+
+|          1 | Om           |    85 |
+|          1 | Om           |    85 |
+|          1 | Om           |    85 |
+|          2 | Rahul        |  NULL |
+|          3 | Priya        |    90 |
+|          3 | Priya        |    90 |
+|          3 | Priya        |    90 |
++------------+--------------+-------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT s.student_id,
+    ->        s.student_name,
+    ->        m.marks
+    -> FROM Students s
+    -> RIGHT JOIN Marks m
+    -> ON s.student_id = m.student_id;
++------------+--------------+-------+
+| student_id | student_name | marks |
++------------+--------------+-------+
+|          1 | Om           |    85 |
+|          3 | Priya        |    90 |
+|       NULL | NULL         |    75 |
+|          1 | Om           |    85 |
+|          3 | Priya        |    90 |
+|       NULL | NULL         |    75 |
+|          1 | Om           |    85 |
+|          3 | Priya        |    90 |
+|       NULL | NULL         |    75 |
++------------+--------------+-------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT s.student_id,
+    ->        s.student_name,
+    ->        m.marks
+    -> FROM Students s
+    -> LEFT JOIN Marks m
+    -> ON s.student_id = m.student_id
+    ->
+    -> UNION
+    ->
+    -> SELECT s.student_id,
+    ->        s.student_name,
+    ->        m.marks
+    -> FROM Students s
+    -> RIGHT JOIN Marks m
+    -> ON s.student_id = m.student_id;
++------------+--------------+-------+
+| student_id | student_name | marks |
++------------+--------------+-------+
+|          1 | Om           |    85 |
+|          2 | Rahul        |  NULL |
+|          3 | Priya        |    90 |
+|       NULL | NULL         |    75 |
++------------+--------------+-------+
+4 rows in set (0.00 sec)
+
+mysql>
