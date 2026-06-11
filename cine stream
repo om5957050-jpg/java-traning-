@@ -1,0 +1,198 @@
+mysql> -- Create Database
+mysql> CREATE DATABASE CineStream;
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> -- Select the database
+mysql> USE CineStream;
+Database changed
+mysql>
+mysql> -- Create Movies Table
+mysql> CREATE TABLE Movies (
+    ->     movie_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     title VARCHAR(255) NOT NULL,
+    ->     genre VARCHAR(100) NOT NULL,
+    ->     release_year INT,
+    ->     rental_rate DECIMAL(5,2)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> -- Create Users Table
+mysql> CREATE TABLE Users (
+    ->     user_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     username VARCHAR(100) NOT NULL UNIQUE,
+    ->     email VARCHAR(255) NOT NULL UNIQUE,
+    ->     join_date DATE,
+    ->     status VARCHAR(10) CHECK (status IN ('Active', 'Inactive'))
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> -- Create WatchLog Table
+mysql> CREATE TABLE WatchLog (
+    ->     log_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     user_id INT,
+    ->     movie_id INT,
+    ->     watch_date DATETIME,
+    ->     duration_minutes INT,
+    ->
+    ->     -- Foreign Key Constraints
+    ->     CONSTRAINT fk_user
+    ->         FOREIGN KEY (user_id)
+    ->         REFERENCES Users(user_id)
+    ->         ON DELETE CASCADE,
+    ->
+    ->     CONSTRAINT fk_movie
+    ->         FOREIGN KEY (movie_id)
+    ->         REFERENCES Movies(movie_id)
+    ->         ON DELETE CASCADE
+    -> );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> DESCRIBE Movies;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| movie_id     | int          | NO   | PRI | NULL    | auto_increment |
+| title        | varchar(255) | NO   |     | NULL    |                |
+| genre        | varchar(100) | NO   |     | NULL    |                |
+| release_year | int          | YES  |     | NULL    |                |
+| rental_rate  | decimal(5,2) | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.02 sec)
+
+mysql> DESCRIBE Users;
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| user_id   | int          | NO   | PRI | NULL    | auto_increment |
+| username  | varchar(100) | NO   | UNI | NULL    |                |
+| email     | varchar(255) | NO   | UNI | NULL    |                |
+| join_date | date         | YES  |     | NULL    |                |
+| status    | varchar(10)  | YES  |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> DESCRIBE WatchLog;INSERT INTO Movies (title, genre, release_year, rental_rate) VALUES
++------------------+----------+------+-----+---------+----------------+
+| Field            | Type     | Null | Key | Default | Extra          |
++------------------+----------+------+-----+---------+----------------+
+| log_id           | int      | NO   | PRI | NULL    | auto_increment |
+| user_id          | int      | YES  | MUL | NULL    |                |
+| movie_id         | int      | YES  | MUL | NULL    |                |
+| watch_date       | datetime | YES  |     | NULL    |                |
+| duration_minutes | int      | YES  |     | NULL    |                |
++------------------+----------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+    -> ('Interstellar', 'Sci-Fi', 2014, 4.99),
+    -> ('Inception', 'Sci-Fi', 2010, 3.99),
+    -> ('Titanic', 'Romance', 1997, 2.99),
+    -> ('The Dark Knight', 'Action', 2008, 4.49),
+    -> ('Avengers: Endgame', 'Action', 2019, 5.99),
+    -> ('The Conjuring', 'Horror', 2013, 3.49),
+    -> ('Forrest Gump', 'Drama', 1994, 2.99),
+    -> ('Toy Story', 'Animation', 1995, 2.49),
+    -> ('Joker', 'Thriller', 2019, 4.99),
+    -> ('The Shawshank Redemption', 'Drama', 1994, 3.99);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> DESCRIBE Movies;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| movie_id     | int          | NO   | PRI | NULL    | auto_increment |
+| title        | varchar(255) | NO   |     | NULL    |                |
+| genre        | varchar(100) | NO   |     | NULL    |                |
+| release_year | int          | YES  |     | NULL    |                |
+| rental_rate  | decimal(5,2) | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> DESCRIBE Users;
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| user_id   | int          | NO   | PRI | NULL    | auto_increment |
+| username  | varchar(100) | NO   | UNI | NULL    |                |
+| email     | varchar(255) | NO   | UNI | NULL    |                |
+| join_date | date         | YES  |     | NULL    |                |
+| status    | varchar(10)  | YES  |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> DESCRIBE WatchLog;
++------------------+----------+------+-----+---------+----------------+
+| Field            | Type     | Null | Key | Default | Extra          |
++------------------+----------+------+-----+---------+----------------+
+| log_id           | int      | NO   | PRI | NULL    | auto_increment |
+| user_id          | int      | YES  | MUL | NULL    |                |
+| movie_id         | int      | YES  | MUL | NULL    |                |
+| watch_date       | datetime | YES  |     | NULL    |                |
+| duration_minutes | int      | YES  |     | NULL    |                |
++------------------+----------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO WatchLog (user_id, movie_id, watch_date, duration_minutes) VALUES
+    -> (2, 1, '2026-06-01 19:30:00', 169),
+    -> (3, 2, '2026-06-02 20:00:00', 148),
+    -> (4, 4, '2026-06-03 18:45:00', 152),
+    -> (5, 3, '2026-06-03 21:00:00', 120),
+    -> (6, 5, '2026-06-04 17:30:00', 181),
+    -> (2, 7, '2026-06-05 19:00:00', 142),
+    -> (8, 6, '2026-06-06 22:00:00', 112),
+    -> (9, 9, '2026-06-07 20:15:00', 122),
+    -> (10, 10, '2026-06-08 18:00:00', 135),
+    -> (4, 1, '2026-06-09 21:30:00', 169);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`cinestream`.`watchlog`, CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE)
+mysql> INSERT INTO Users (username, email, join_date, status) VALUES
+    -> ('johndoe123', 'john@example.com', '2025-02-15', 'Inactive'),
+    -> ('alice01', 'alice@example.com', '2025-03-20', 'Active'),
+    -> ('bob99', 'bob@example.com', '2024-12-10', 'Active'),
+    -> ('charlie22', 'charlie@example.com', '2025-01-18', 'Active'),
+    -> ('diana45', 'diana@example.com', '2025-04-25', 'Inactive'),
+    -> ('ethan77', 'ethan@example.com', '2025-05-10', 'Active'),
+    -> ('fiona88', 'fiona@example.com', '2024-11-30', 'Active'),
+    -> ('george12', 'george@example.com', '2025-06-01', 'Inactive'),
+    -> ('hannah09', 'hannah@example.com', '2025-02-28', 'Active'),
+    -> ('ivan66', 'ivan@example.com', '2025-03-05', 'Active');
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Movies;
++----------+--------------------------+-----------+--------------+-------------+
+| movie_id | title                    | genre     | release_year | rental_rate |
++----------+--------------------------+-----------+--------------+-------------+
+|        1 | Interstellar             | Sci-Fi    |         2014 |        4.99 |
+|        2 | Inception                | Sci-Fi    |         2010 |        3.99 |
+|        3 | Titanic                  | Romance   |         1997 |        2.99 |
+|        4 | The Dark Knight          | Action    |         2008 |        4.49 |
+|        5 | Avengers: Endgame        | Action    |         2019 |        5.99 |
+|        6 | The Conjuring            | Horror    |         2013 |        3.49 |
+|        7 | Forrest Gump             | Drama     |         1994 |        2.99 |
+|        8 | Toy Story                | Animation |         1995 |        2.49 |
+|        9 | Joker                    | Thriller  |         2019 |        4.99 |
+|       10 | The Shawshank Redemption | Drama     |         1994 |        3.99 |
++----------+--------------------------+-----------+--------------+-------------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Users;
++---------+------------+---------------------+------------+----------+
+| user_id | username   | email               | join_date  | status   |
++---------+------------+---------------------+------------+----------+
+|       1 | johndoe123 | john@example.com    | 2025-02-15 | Inactive |
+|       2 | alice01    | alice@example.com   | 2025-03-20 | Active   |
+|       3 | bob99      | bob@example.com     | 2024-12-10 | Active   |
+|       4 | charlie22  | charlie@example.com | 2025-01-18 | Active   |
+|       5 | diana45    | diana@example.com   | 2025-04-25 | Inactive |
+|       6 | ethan77    | ethan@example.com   | 2025-05-10 | Active   |
+|       7 | fiona88    | fiona@example.com   | 2024-11-30 | Active   |
+|       8 | george12   | george@example.com  | 2025-06-01 | Inactive |
+|       9 | hannah09   | hannah@example.com  | 2025-02-28 | Active   |
+|      10 | ivan66     | ivan@example.com    | 2025-03-05 | Active   |
++---------+------------+---------------------+------------+----------+
+10 rows in set (0.00 sec)
+
+mysql>
